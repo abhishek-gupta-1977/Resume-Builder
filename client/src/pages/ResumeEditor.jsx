@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { FiSave, FiDownload, FiArrowLeft, FiLoader, FiGrid, FiPlus, FiTrash2, FiEye } from 'react-icons/fi';
-import api from '../services/api';
-import Button from '../components/Button';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  FiSave,
+  FiDownload,
+  FiArrowLeft,
+  FiLoader,
+  FiGrid,
+  FiPlus,
+  FiTrash2,
+  FiEye,
+} from "react-icons/fi";
+import api from "../services/api";
+import Button from "../components/Button";
 
 // Your template definitions
 const TEMPLATES = {
@@ -135,13 +144,13 @@ const ResumeEditor = () => {
   const [exporting, setExporting] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
 
-  const [professionalSummary, setProfessionalSummary] = useState('');
+  const [professionalSummary, setProfessionalSummary] = useState("");
   const [enhancedExperience, setEnhancedExperience] = useState([]);
   const [enhancedProjects, setEnhancedProjects] = useState([]);
-  const [roleSuggestions, setRoleSuggestions] = useState('');
+  const [roleSuggestions, setRoleSuggestions] = useState("");
 
   const [templates, setTemplates] = useState([]);
-  const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [selectedTemplate, setSelectedTemplate] = useState("modern");
   const [updatingTemplate, setUpdatingTemplate] = useState(false);
   const [templatesLoading, setTemplatesLoading] = useState(true);
 
@@ -155,16 +164,16 @@ const ResumeEditor = () => {
       const response = await api.get(`/resume/${resumeId}`);
       const data = response.data.data;
       setResume(data);
-      setSelectedTemplate(data.template || 'modern');
+      setSelectedTemplate(data.template || "modern");
       if (data.aiFields) {
-        setProfessionalSummary(data.aiFields.professionalSummary || '');
+        setProfessionalSummary(data.aiFields.professionalSummary || "");
         setEnhancedExperience(data.aiFields.enhancedExperience || []);
         setEnhancedProjects(data.aiFields.enhancedProjects || []);
-        setRoleSuggestions(data.aiFields.roleBasedSuggestions || '');
+        setRoleSuggestions(data.aiFields.roleBasedSuggestions || "");
       }
     } catch (error) {
-      toast.error('Failed to load resume');
-      navigate('/resumes');
+      toast.error("Failed to load resume");
+      navigate("/resumes");
     } finally {
       setLoading(false);
     }
@@ -172,10 +181,10 @@ const ResumeEditor = () => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await api.get('/resume/templates/list');
+      const response = await api.get("/resume/templates/list");
       setTemplates(response.data.data);
     } catch (error) {
-      toast.error('Failed to load templates');
+      toast.error("Failed to load templates");
     } finally {
       setTemplatesLoading(false);
     }
@@ -190,11 +199,13 @@ const ResumeEditor = () => {
         enhancedProjects,
         roleBasedSuggestions: roleSuggestions,
       };
-      const response = await api.put(`/resume/${resumeId}`, { aiFields: updatedAiFields });
-      toast.success('Resume updated successfully');
+      const response = await api.put(`/resume/${resumeId}`, {
+        aiFields: updatedAiFields,
+      });
+      toast.success("Resume updated successfully");
       setResume(response.data.data);
     } catch (error) {
-      toast.error('Update failed');
+      toast.error("Update failed");
     } finally {
       setSaving(false);
     }
@@ -204,20 +215,23 @@ const ResumeEditor = () => {
     setExporting(true);
     try {
       const response = await api.get(`/resume/${resumeId}/export`, {
-        responseType: 'blob',
+        responseType: "blob",
       });
-      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `${resume?.personalDetails?.fullName || 'resume'}.pdf`);
+      link.setAttribute(
+        "download",
+        `${resume?.personalDetails?.fullName || "resume"}.pdf`,
+      );
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      toast.success('PDF exported');
+      toast.success("PDF exported");
     } catch (error) {
-      toast.error('PDF export failed');
+      toast.error("PDF export failed");
     } finally {
       setExporting(false);
     }
@@ -228,12 +242,14 @@ const ResumeEditor = () => {
     if (templateName === selectedTemplate) return;
     setUpdatingTemplate(true);
     try {
-      const response = await api.put(`/resume/${resumeId}/template`, { template: templateName });
+      const response = await api.put(`/resume/${resumeId}/template`, {
+        template: templateName,
+      });
       setSelectedTemplate(templateName);
       setResume((prev) => ({ ...prev, template: templateName }));
       toast.success(`Template changed to ${templateName}`);
     } catch (error) {
-      toast.error('Failed to update template');
+      toast.error("Failed to update template");
     } finally {
       setUpdatingTemplate(false);
     }
@@ -247,12 +263,14 @@ const ResumeEditor = () => {
   };
   const addExperienceBullet = (expIdx) => {
     const updated = [...enhancedExperience];
-    updated[expIdx].bulletPoints.push('New bullet point');
+    updated[expIdx].bulletPoints.push("New bullet point");
     setEnhancedExperience(updated);
   };
   const removeExperienceBullet = (expIdx, bulletIdx) => {
     const updated = [...enhancedExperience];
-    updated[expIdx].bulletPoints = updated[expIdx].bulletPoints.filter((_, i) => i !== bulletIdx);
+    updated[expIdx].bulletPoints = updated[expIdx].bulletPoints.filter(
+      (_, i) => i !== bulletIdx,
+    );
     setEnhancedExperience(updated);
   };
   const updateProjectBullet = (projIdx, bulletIdx, newText) => {
@@ -262,12 +280,14 @@ const ResumeEditor = () => {
   };
   const addProjectBullet = (projIdx) => {
     const updated = [...enhancedProjects];
-    updated[projIdx].aiBulletPoints.push('New bullet point');
+    updated[projIdx].aiBulletPoints.push("New bullet point");
     setEnhancedProjects(updated);
   };
   const removeProjectBullet = (projIdx, bulletIdx) => {
     const updated = [...enhancedProjects];
-    updated[projIdx].aiBulletPoints = updated[projIdx].aiBulletPoints.filter((_, i) => i !== bulletIdx);
+    updated[projIdx].aiBulletPoints = updated[projIdx].aiBulletPoints.filter(
+      (_, i) => i !== bulletIdx,
+    );
     setEnhancedProjects(updated);
   };
 
@@ -288,8 +308,10 @@ const ResumeEditor = () => {
       layout,
     } = template;
 
-    const sectionBorder = showBorderLines ? `1px solid ${secondaryColor}20` : 'none';
-    const isDark = selectedTemplate === 'dark';
+    const sectionBorder = showBorderLines
+      ? `1px solid ${secondaryColor}20`
+      : "none";
+    const isDark = selectedTemplate === "dark";
 
     return (
       <div
@@ -297,77 +319,111 @@ const ResumeEditor = () => {
           fontFamily: fontBody,
           fontSize: `${bodyFontSize}px`,
           color: primaryColor,
-          backgroundColor: isDark ? '#1a1a1a' : '#ffffff',
-          padding: '1.5rem',
-          borderRadius: '0.75rem',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-          maxHeight: '80vh',
-          overflowY: 'auto',
+          backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
+          padding: "1.5rem",
+          borderRadius: "0.75rem",
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+          maxHeight: "80vh",
+          overflowY: "auto",
         }}
       >
-        <div style={{ borderBottom: sectionBorder, paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+        <div
+          style={{
+            borderBottom: sectionBorder,
+            paddingBottom: "0.5rem",
+            marginBottom: "1rem",
+          }}
+        >
           <h1
             style={{
               fontFamily: fontHeader,
               fontSize: `${titleFontSize}px`,
               color: primaryColor,
-              marginBottom: '0.25rem',
+              marginBottom: "0.25rem",
             }}
           >
             {resume?.personalDetails?.fullName}
           </h1>
-          <p style={{ fontSize: `${bodyFontSize + 1}px`, color: secondaryColor }}>
+          <p
+            style={{ fontSize: `${bodyFontSize + 1}px`, color: secondaryColor }}
+          >
             {resume?.personalDetails?.email}
-            {resume?.personalDetails?.phone && ` • ${resume.personalDetails.phone}`}
-            {resume?.personalDetails?.location && ` • ${resume.personalDetails.location}`}
+            {resume?.personalDetails?.phone &&
+              ` • ${resume.personalDetails.phone}`}
+            {resume?.personalDetails?.location &&
+              ` • ${resume.personalDetails.location}`}
           </p>
         </div>
 
         {professionalSummary && (
-          <div style={{ marginBottom: '1rem' }}>
+          <div style={{ marginBottom: "1rem" }}>
             <h2
               style={{
                 fontFamily: fontSubheader,
                 fontSize: `${sectionFontSize}px`,
                 color: primaryColor,
                 borderBottom: sectionBorder,
-                display: 'inline-block',
-                marginBottom: '0.5rem',
+                display: "inline-block",
+                marginBottom: "0.5rem",
               }}
             >
               Professional Summary
             </h2>
-            <p style={{ fontSize: `${bodyFontSize}px`, color: secondaryColor, marginTop: '0.25rem' }}>
+            <p
+              style={{
+                fontSize: `${bodyFontSize}px`,
+                color: secondaryColor,
+                marginTop: "0.25rem",
+              }}
+            >
               {professionalSummary}
             </p>
           </div>
         )}
 
         {enhancedExperience.length > 0 && (
-          <div style={{ marginBottom: '1rem' }}>
+          <div style={{ marginBottom: "1rem" }}>
             <h2
               style={{
                 fontFamily: fontSubheader,
                 fontSize: `${sectionFontSize}px`,
                 color: primaryColor,
                 borderBottom: sectionBorder,
-                display: 'inline-block',
-                marginBottom: '0.5rem',
+                display: "inline-block",
+                marginBottom: "0.5rem",
               }}
             >
               Experience
             </h2>
             {enhancedExperience.map((exp, idx) => (
-              <div key={idx} style={{ marginBottom: '1rem' }}>
-                <h3 style={{ fontFamily: fontHeader, fontSize: `${bodyFontSize + 2}px`, color: primaryColor }}>
+              <div key={idx} style={{ marginBottom: "1rem" }}>
+                <h3
+                  style={{
+                    fontFamily: fontHeader,
+                    fontSize: `${bodyFontSize + 2}px`,
+                    color: primaryColor,
+                  }}
+                >
                   {exp.role}
                 </h3>
-                <p style={{ fontSize: `${bodyFontSize}px`, color: accentColor, marginBottom: '0.25rem' }}>
+                <p
+                  style={{
+                    fontSize: `${bodyFontSize}px`,
+                    color: accentColor,
+                    marginBottom: "0.25rem",
+                  }}
+                >
                   {exp.company}
                 </p>
-                <ul style={{ marginLeft: '1rem', listStyleType: 'disc' }}>
+                <ul style={{ marginLeft: "1rem", listStyleType: "disc" }}>
                   {exp.bulletPoints.map((bullet, bIdx) => (
-                    <li key={bIdx} style={{ fontSize: `${bodyFontSize}px`, color: secondaryColor }}>
+                    <li
+                      key={bIdx}
+                      style={{
+                        fontSize: `${bodyFontSize}px`,
+                        color: secondaryColor,
+                      }}
+                    >
                       {bullet}
                     </li>
                   ))}
@@ -378,27 +434,39 @@ const ResumeEditor = () => {
         )}
 
         {enhancedProjects.length > 0 && (
-          <div style={{ marginBottom: '1rem' }}>
+          <div style={{ marginBottom: "1rem" }}>
             <h2
               style={{
                 fontFamily: fontSubheader,
                 fontSize: `${sectionFontSize}px`,
                 color: primaryColor,
                 borderBottom: sectionBorder,
-                display: 'inline-block',
-                marginBottom: '0.5rem',
+                display: "inline-block",
+                marginBottom: "0.5rem",
               }}
             >
               Projects
             </h2>
             {enhancedProjects.map((proj, idx) => (
-              <div key={idx} style={{ marginBottom: '1rem' }}>
-                <h3 style={{ fontFamily: fontHeader, fontSize: `${bodyFontSize + 2}px`, color: primaryColor }}>
+              <div key={idx} style={{ marginBottom: "1rem" }}>
+                <h3
+                  style={{
+                    fontFamily: fontHeader,
+                    fontSize: `${bodyFontSize + 2}px`,
+                    color: primaryColor,
+                  }}
+                >
                   {proj.title}
                 </h3>
-                <ul style={{ marginLeft: '1rem', listStyleType: 'disc' }}>
+                <ul style={{ marginLeft: "1rem", listStyleType: "disc" }}>
                   {proj.aiBulletPoints.map((bullet, bIdx) => (
-                    <li key={bIdx} style={{ fontSize: `${bodyFontSize}px`, color: secondaryColor }}>
+                    <li
+                      key={bIdx}
+                      style={{
+                        fontSize: `${bodyFontSize}px`,
+                        color: secondaryColor,
+                      }}
+                    >
                       {bullet}
                     </li>
                   ))}
@@ -416,21 +484,28 @@ const ResumeEditor = () => {
                 fontSize: `${sectionFontSize}px`,
                 color: primaryColor,
                 borderBottom: sectionBorder,
-                display: 'inline-block',
-                marginBottom: '0.5rem',
+                display: "inline-block",
+                marginBottom: "0.5rem",
               }}
             >
               Skills
             </h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem",
+                marginTop: "0.5rem",
+              }}
+            >
               {resume.skills.map((skill, i) => (
                 <span
                   key={i}
                   style={{
                     backgroundColor: `${primaryColor}15`,
                     color: primaryColor,
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: '9999px',
+                    padding: "0.25rem 0.75rem",
+                    borderRadius: "9999px",
                     fontSize: `${bodyFontSize - 1}px`,
                   }}
                 >
@@ -444,10 +519,10 @@ const ResumeEditor = () => {
         {roleSuggestions && (
           <div
             style={{
-              marginTop: '1rem',
-              padding: '0.75rem',
+              marginTop: "1rem",
+              padding: "0.75rem",
               backgroundColor: `${accentColor}10`,
-              borderRadius: '0.5rem',
+              borderRadius: "0.5rem",
               fontSize: `${bodyFontSize - 1}px`,
               color: accentColor,
             }}
@@ -468,7 +543,9 @@ const ResumeEditor = () => {
   }
 
   if (!resume) {
-    return <div className="text-center py-20 text-red-600">Resume not found</div>;
+    return (
+      <div className="text-center py-20 text-red-600">Resume not found</div>
+    );
   }
 
   return (
@@ -477,7 +554,7 @@ const ResumeEditor = () => {
         {/* Top Bar */}
         <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
           <button
-            onClick={() => navigate('/resumes')}
+            onClick={() => navigate("/resumes")}
             className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-all hover:gap-3"
           >
             <FiArrowLeft /> Back to Resumes
@@ -487,7 +564,7 @@ const ResumeEditor = () => {
               onClick={() => setShowPreview(!showPreview)}
               className="lg:hidden flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 hover:border-indigo-400"
             >
-              <FiEye /> {showPreview ? 'Hide Preview' : 'Show Preview'}
+              <FiEye /> {showPreview ? "Hide Preview" : "Show Preview"}
             </button>
             <div className="relative">
               <select
@@ -497,7 +574,9 @@ const ResumeEditor = () => {
                 className="px-4 py-2 border border-slate-200 rounded-xl bg-white text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer pr-10"
               >
                 {templatesLoading && <option>Loading templates...</option>}
-                {!templatesLoading && templates.length === 0 && <option>No templates</option>}
+                {!templatesLoading && templates.length === 0 && (
+                  <option>No templates</option>
+                )}
                 {Object.keys(TEMPLATES).map((name) => (
                   <option key={name} value={name}>
                     {name.charAt(0).toUpperCase() + name.slice(1)}
@@ -509,10 +588,19 @@ const ResumeEditor = () => {
                 <FiLoader className="absolute right-8 top-1/2 transform -translate-y-1/2 animate-spin text-indigo-600" />
               )}
             </div>
-            <Button onClick={handleExportPDF} isLoading={exporting} variant="outline" className="border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl px-5 py-2.5 shadow-sm">
+            <Button
+              onClick={handleExportPDF}
+              isLoading={exporting}
+              variant="outline"
+              className="border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl px-5 py-2.5 shadow-sm"
+            >
               <FiDownload className="mr-2" /> Export PDF
             </Button>
-            <Button onClick={handleUpdate} isLoading={saving} className="text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl px-5 py-2.5 shadow-md hover:shadow-lg">
+            <Button
+              onClick={handleUpdate}
+              isLoading={saving}
+              className="text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl px-5 py-2.5 shadow-md hover:shadow-lg"
+            >
               <FiSave className="mr-2" /> Save Changes
             </Button>
           </div>
@@ -532,11 +620,13 @@ const ResumeEditor = () => {
                   disabled={updatingTemplate}
                   className={`group relative flex items-center justify-center p-2 rounded-lg border transition-all duration-200 ${
                     selectedTemplate === name
-                      ? 'border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50/30'
-                      : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                      ? "border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50/30"
+                      : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50"
                   }`}
                 >
-                  <span className="text-sm font-medium text-slate-700 capitalize">{name}</span>
+                  <span className="text-sm font-medium text-slate-700 capitalize">
+                    {name}
+                  </span>
                   {selectedTemplate === name && (
                     <div className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-600 rounded-full flex items-center justify-center shadow-sm">
                       <span className="text-white text-xs">✓</span>
@@ -554,17 +644,25 @@ const ResumeEditor = () => {
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-100 p-6 md:p-8 space-y-8">
             {/* Personal Header */}
             <div className="border-b border-slate-200 pb-4">
-              <h1 className="text-3xl font-bold text-slate-800">{resume.personalDetails.fullName}</h1>
+              <h1 className="text-3xl font-bold text-slate-800">
+                {resume.personalDetails.fullName}
+              </h1>
               <p className="text-slate-600 mt-1 flex flex-wrap gap-2">
                 <span>{resume.personalDetails.email}</span>
-                {resume.personalDetails.phone && <span>• {resume.personalDetails.phone}</span>}
-                {resume.personalDetails.location && <span>• {resume.personalDetails.location}</span>}
+                {resume.personalDetails.phone && (
+                  <span>• {resume.personalDetails.phone}</span>
+                )}
+                {resume.personalDetails.location && (
+                  <span>• {resume.personalDetails.location}</span>
+                )}
               </p>
             </div>
 
             {/* Professional Summary */}
             <div>
-              <h2 className="text-xl font-bold text-slate-800 mb-3">Professional Summary</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-3">
+                Professional Summary
+              </h2>
               <textarea
                 value={professionalSummary}
                 onChange={(e) => setProfessionalSummary(e.target.value)}
@@ -575,11 +673,18 @@ const ResumeEditor = () => {
 
             {/* Experience */}
             <div>
-              <h2 className="text-xl font-bold text-slate-800 mb-3">Experience</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-3">
+                Experience
+              </h2>
               {enhancedExperience.map((exp, idx) => (
-                <div key={idx} className="border border-slate-200 rounded-xl p-5 mb-5 bg-white/40 shadow-sm">
+                <div
+                  key={idx}
+                  className="border border-slate-200 rounded-xl p-5 mb-5 bg-white/40 shadow-sm"
+                >
                   <div className="mb-3">
-                    <h3 className="font-bold text-lg text-slate-800">{exp.role}</h3>
+                    <h3 className="font-bold text-lg text-slate-800">
+                      {exp.role}
+                    </h3>
                     <p className="text-indigo-600">{exp.company}</p>
                   </div>
                   <div className="space-y-2">
@@ -589,7 +694,9 @@ const ResumeEditor = () => {
                         <input
                           type="text"
                           value={bullet}
-                          onChange={(e) => updateExperienceBullet(idx, bIdx, e.target.value)}
+                          onChange={(e) =>
+                            updateExperienceBullet(idx, bIdx, e.target.value)
+                          }
                           className="flex-1 py-1.5 px-2 border border-slate-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
                         />
                         <button
@@ -600,7 +707,10 @@ const ResumeEditor = () => {
                         </button>
                       </div>
                     ))}
-                    <button onClick={() => addExperienceBullet(idx)} className="text-sm text-indigo-600 flex items-center gap-1 mt-2">
+                    <button
+                      onClick={() => addExperienceBullet(idx)}
+                      className="text-sm text-indigo-600 flex items-center gap-1 mt-2"
+                    >
                       <FiPlus /> Add bullet point
                     </button>
                   </div>
@@ -610,10 +720,17 @@ const ResumeEditor = () => {
 
             {/* Projects */}
             <div>
-              <h2 className="text-xl font-bold text-slate-800 mb-3">Projects</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-3">
+                Projects
+              </h2>
               {enhancedProjects.map((proj, idx) => (
-                <div key={idx} className="border border-slate-200 rounded-xl p-5 mb-5 bg-white/40 shadow-sm">
-                  <h3 className="font-bold text-lg text-slate-800 mb-2">{proj.title}</h3>
+                <div
+                  key={idx}
+                  className="border border-slate-200 rounded-xl p-5 mb-5 bg-white/40 shadow-sm"
+                >
+                  <h3 className="font-bold text-lg text-slate-800 mb-2">
+                    {proj.title}
+                  </h3>
                   <div className="space-y-2">
                     {proj.aiBulletPoints.map((bullet, bIdx) => (
                       <div key={bIdx} className="flex items-start gap-2 group">
@@ -621,7 +738,9 @@ const ResumeEditor = () => {
                         <input
                           type="text"
                           value={bullet}
-                          onChange={(e) => updateProjectBullet(idx, bIdx, e.target.value)}
+                          onChange={(e) =>
+                            updateProjectBullet(idx, bIdx, e.target.value)
+                          }
                           className="flex-1 py-1.5 px-2 border border-slate-200 rounded-lg focus:ring-1 focus:ring-indigo-500"
                         />
                         <button
@@ -632,7 +751,10 @@ const ResumeEditor = () => {
                         </button>
                       </div>
                     ))}
-                    <button onClick={() => addProjectBullet(idx)} className="text-sm text-indigo-600 flex items-center gap-1 mt-2">
+                    <button
+                      onClick={() => addProjectBullet(idx)}
+                      className="text-sm text-indigo-600 flex items-center gap-1 mt-2"
+                    >
                       <FiPlus /> Add bullet point
                     </button>
                   </div>
@@ -645,7 +767,10 @@ const ResumeEditor = () => {
               <h2 className="text-xl font-bold text-slate-800 mb-3">Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {resume.skills?.map((skill, i) => (
-                  <span key={i} className="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full text-sm font-medium">
+                  <span
+                    key={i}
+                    className="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full text-sm font-medium"
+                  >
                     {skill}
                   </span>
                 ))}
@@ -664,10 +789,12 @@ const ResumeEditor = () => {
           </div>
 
           {/* Preview (right) */}
-          <div className={`${showPreview ? 'block' : 'hidden lg:block'}`}>
+          <div className={`${showPreview ? "block" : "hidden lg:block"}`}>
             <div className="sticky top-8">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xl font-bold text-slate-800">Live Preview</h2>
+                <h2 className="text-xl font-bold text-slate-800">
+                  Live Preview
+                </h2>
                 <span className="text-xs text-slate-500 bg-white/60 px-2 py-1 rounded-full capitalize">
                   {selectedTemplate} template
                 </span>

@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
-import toast from 'react-hot-toast';
-import api from '../services/api';
-import Button from '../components/Button';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import toast from "react-hot-toast";
+import api from "../services/api";
+import Button from "../components/Button";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+    name: "",
+    email: "",
+    password: "",
   });
 
   const handleChange = (e) => {
@@ -26,28 +26,30 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.password) {
-      toast.error('Please fill in all fields');
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (!validatePassword(formData.password)) {
-      toast.error('Password must be at least 8 characters, contain uppercase, number, and special character');
+      toast.error(
+        "Password must be at least 8 characters, contain uppercase, number, and special character",
+      );
       return;
     }
 
     setLoading(true);
     try {
-      const response = await api.post('/auth/signup', formData);
+      const response = await api.post("/auth/signup", formData);
       if (response.data.success) {
         toast.success(response.data.message);
-        setTimeout(() => navigate('/login'), 2000);
+        setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
-      const message = error.response?.data?.message || 'Signup failed';
+      const message = error.response?.data?.message || "Signup failed";
       toast.error(message);
-      console.log(error)
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -65,7 +67,9 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Full Name
+            </label>
             <div className="relative">
               <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input
@@ -81,7 +85,9 @@ const Signup = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Email Address
+            </label>
             <div className="relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input
@@ -97,11 +103,13 @@ const Signup = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Password
+            </label>
             <div className="relative">
               <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -118,7 +126,8 @@ const Signup = () => {
               </button>
             </div>
             <div className="mt-2 text-xs text-slate-500">
-              Password must contain: uppercase, number, special character (!@#$&*), min 8 chars
+              Password must contain: uppercase, number, special character
+              (!@#$&*), min 8 chars
             </div>
           </div>
 
@@ -128,8 +137,11 @@ const Signup = () => {
         </form>
 
         <p className="text-center text-slate-600 mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-indigo-600 hover:text-indigo-700 font-semibold"
+          >
             Login
           </Link>
         </p>

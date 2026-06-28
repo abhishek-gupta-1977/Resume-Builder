@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const templateSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },   // 'modern', 'classic', 'minimal'
-  displayName: { type: String, required: true },          // 'Modern Professional'
+  name: { type: String, required: true, unique: true }, // 'modern', 'classic', 'minimal'
+  displayName: { type: String, required: true }, // 'Modern Professional'
   description: String,
   thumbnailUrl: String,
-  isActive: { type: Boolean, default: true }
+  isActive: { type: Boolean, default: true },
 });
 
-export const Template = mongoose.model('Template', templateSchema);
+export const Template = mongoose.model("Template", templateSchema);

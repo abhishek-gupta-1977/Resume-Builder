@@ -9,13 +9,11 @@ dotenv.config();
 
 const app = express();
 
-
-app.use(express.json()); 
-
+app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:3000", 
+    origin: "http://localhost:3000",
     credentials: true,
   }),
 );
@@ -32,25 +30,21 @@ const connectDB = async () => {
       `\x1b[31m%s\x1b[0m`,
       `✖ Database Connection Failed! Error: ${error.message}`,
     );
-    process.exit(1); 
+    process.exit(1);
   }
 };
 
 connectDB();
 
-
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
 app.get("/", (req, res) => {
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: "AI Resume Builder Backend API running smoothly.",
-    });
+  res.status(200).json({
+    success: true,
+    message: "AI Resume Builder Backend API running smoothly.",
+  });
 });
-
 
 const PORT = process.env.PORT || 5000;
 

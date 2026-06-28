@@ -6,9 +6,7 @@ import { Template } from "../models/Template.js";
 // Initialize the modern Google Gen AI SDK client
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-/* ==========================================================================
-   1 & 2 & 3 & 4. SUBMIT RAW DATA & GENERATE AI RESUME CONTENT
-   ========================================================================== */
+
 export const generateResumeAI = async (req, res) => {
   try {
     const { personalDetails, education, experience, projects, skills, title } =
@@ -85,9 +83,6 @@ export const generateResumeAI = async (req, res) => {
   }
 };
 
-/* ==========================================================================
-   5 & 6. UPDATE GENERATED RESUME CONTENT MANUALLY
-   ========================================================================== */
 export const updateResumeContent = async (req, res) => {
   try {
     const { resumeId } = req.params;
@@ -115,10 +110,6 @@ export const updateResumeContent = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
-/* ==========================================================================
-   7. EXPORT COMPILED RESUME DATA TO PDF
-   ========================================================================== */
 
 export const exportResumePdf = async (req, res) => {
   try {
@@ -488,7 +479,7 @@ export const updateResumeTemplate = async (req, res) => {
     const resume = await Resume.findOneAndUpdate(
       { _id: resumeId, userId: req.user.id },
       { template },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     if (!resume) {

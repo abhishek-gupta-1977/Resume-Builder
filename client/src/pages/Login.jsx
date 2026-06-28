@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
-import { useAuth } from '../context/AuthContext';
-import Button from '../components/Button';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext";
+import Button from "../components/Button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,8 +10,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleChange = (e) => {
@@ -20,7 +20,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       return;
     }
@@ -28,7 +28,7 @@ const Login = () => {
     setLoading(true);
     const result = await login(formData.email, formData.password);
     if (result.success) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
     setLoading(false);
   };
@@ -45,7 +45,9 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Email Address
+            </label>
             <div className="relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input
@@ -61,11 +63,13 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Password
+            </label>
             <div className="relative">
               <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -84,7 +88,10 @@ const Login = () => {
           </div>
 
           <div className="text-right">
-            <Link to="/forgot-password/request" className="text-sm text-indigo-600 hover:text-indigo-700">
+            <Link
+              to="/forgot-password/request"
+              className="text-sm text-indigo-600 hover:text-indigo-700"
+            >
               Forgot Password?
             </Link>
           </div>
@@ -95,8 +102,11 @@ const Login = () => {
         </form>
 
         <p className="text-center text-slate-600 mt-6">
-          Don't have an account?{' '}
-          <Link to="/signup" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-indigo-600 hover:text-indigo-700 font-semibold"
+          >
             Sign Up
           </Link>
         </p>
